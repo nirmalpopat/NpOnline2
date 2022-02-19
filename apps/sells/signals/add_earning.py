@@ -19,7 +19,10 @@ def add_earnings(sender, instance, created, **kwargs):
     if instance.item.is_company:
         # company = instance.company.objects.get(id = instance.company.id)
         if instance.company.is_stockable:
-            stock_obj = Stock.objects.get(user = instance.user, item = instance.item)
+            stock_obj = Stock.objects.get(
+                user = instance.user, 
+                item = instance.item
+            )
             stock_obj.item_qty -= instance.item_qty
             stock_obj.save()
             buy_price = instance.company.buy_price
