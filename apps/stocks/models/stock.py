@@ -12,7 +12,6 @@ from utils.core.models import TimeStampable
 
 # import require models
 from apps.common.models.item import Item
-from apps.common.models.company import Company, FRCPlans
 
 USER = get_user_model()
 
@@ -26,4 +25,11 @@ class Stock(TimeStampable):
         unique_together = (('user_name', 'item_name'),)
     
     def __str__(self):
-        return f'{self.user.username} has {self.item_qty} {self.item.name}'}
+        return f'{self.user.username} has {self.item_qty} {self.item.name}'
+    
+    def save(self, *args, **kwargs):
+        if USER.is_superuser:
+            self.is_admin_updated = True
+        else:
+            self.is_admin_updated = False
+        super(Stock, self).save(*args, **kwargs)

@@ -17,10 +17,10 @@ from apps.common.models.company import Company, FRCPlans
 USER = get_user_model()
 
 class Sells(TimeStampable):
-    user = models.ForeignKey(USER, on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(USER, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete = models.CASCADE)
-    company = models.ForeignKey(Company, on_delete= models.CASCADE, default="", blank=True, null=True)
-    frc = models.ForeignKey(FRCPlans, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete= models.CASCADE, blank=True, null=True)
+    frc = models.ForeignKey(FRCPlans, on_delete=models.CASCADE, blank=True, null=True)
     item_qty = models.IntegerField(default=1)
     price = models.IntegerField()
     comment = models.CharField(max_length=50, blank=True, null=True) 
