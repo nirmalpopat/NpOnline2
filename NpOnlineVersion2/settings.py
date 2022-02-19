@@ -42,6 +42,7 @@ DJANGO_APPS = [
 LOCAL_APPS = [
     'apps.sells',
     'apps.stocks',
+    'apps.earnings',
 ]
 
 THIRD_PARTY_APPS = [
