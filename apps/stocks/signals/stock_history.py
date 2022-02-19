@@ -16,8 +16,8 @@ USER = get_user_model()
 @receiver(post_save, sender=Stock)
 def add_stockhistory(sender, instance, created, **kwargs):    
     StockHistory.objects.create(
-        user_name=instance.user_name, 
-        item_name=instance.item_name, 
+        user=instance.user, 
+        item=instance.item, 
         item_qty=instance.item_qty, 
         is_admin_updated = instance.is_admin_updated
     )

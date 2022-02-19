@@ -43,6 +43,7 @@ LOCAL_APPS = [
     'apps.sells',
     'apps.stocks',
     'apps.earnings',
+    'apps.common',
 ]
 
 THIRD_PARTY_APPS = [
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 ROOT_URLCONF = 'NpOnlineVersion2.urls'

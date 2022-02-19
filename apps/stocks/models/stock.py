@@ -2,6 +2,8 @@
 # python imports
 from __future__ import unicode_literals
 
+from crum import get_current_user
+
 # lib imports
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -22,13 +24,13 @@ class Stock(TimeStampable):
     is_admin_updated = models.BooleanField(editable=False)
     
     class Meta:
-        unique_together = (('user_name', 'item_name'),)
+        unique_together = (('user', 'item'),)
     
     def __str__(self):
         return f'{self.user.username} has {self.item_qty} {self.item.name}'
     
     def save(self, *args, **kwargs):
-        if USER.is_superuser:
+        if get_current_user().is_superuser:
             self.is_admin_updated = True
         else:
             self.is_admin_updated = False
