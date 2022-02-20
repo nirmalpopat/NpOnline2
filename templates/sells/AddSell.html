@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+{{request.user}}
+<form method="POST">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <br>
+    <input type="submit" class="btn btn-success" value="Add" id="AddSell">
+
+</form>
+
+{% comment %} 
+
+Report
+
+{% endcomment %}
+
+
+    <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">No.</th>
+              {% if username %}
+                <th scope="col">User Name</th>
+              {% endif %}
+              <th scope="col">Item Name</th>
+              <th scope="col">QTY</th>
+              <th scope="col">Price</th>
+              <th scope="col">Comment</th>
+              {% comment %} <th scope="col">Date</th> {% endcomment %}
+              <th scope="col">Time</th>
+            </tr>
+        </thead>
+        <tbody> 
+                {% for i in report %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+                    {% if username %}
+                        <td>
+                            {{ i.user_name.username }}
+                        </td>
+                    {% endif %}
+                    <td>
+                        {{ i.item }} {% if i.company %} {{ i.company }} {% endif %}
+                    </td>
+                    <td>
+                        {{ i.item_qty }}
+                    </td>
+                    <td>
+                        {{ i.price }}
+                    </td>
+                    <td>
+                        {{ i.comment }}
+                    </td>
+                    {% comment %} <td>
+                        {{ i.create_date.date }}
+                    </td> {% endcomment %}
+                    <td>
+                        {{ i.create_date.time }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+
+    // for hide initial inputs    
+    $(document).ready(function() {
+        $("#div_id_company").hide();
+        $("#div_id_frc").hide();
+    });
+
+    // change sub item based on item
+    $('#id_item').change(function() {
+        $("#div_id_frc").hide();
+        document.getElementById("id_frc").required = false;
+        document.getElementById("id_frc").value = null;
+        // ajax call for sub items
+        let csr = $("input[name=csrfmiddlewaretoken").val();
+        var item = $(this).val();
+        data = {item:item, csrfmiddlewaretoken:csr};
+
+        if($(this).val() == 1 || $(this).val() == 3 || $(this).val() == 2 || $(this).val() == 4){
+            $("#div_id_company").show();
+            document.getElementById("id_company").required = true;
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'ChangeCompanyName' %}",
+                data: data,
+                success: function (data){
+                    if(data.data.length > 0){
+                        document.getElementById("id_company").hidden = false;
+                    }
+                    else{
+                        document.getElementById("id_company").hidden = true;
+                    }
+                    $("#id_company").children().remove().end();
+                    $("#id_company").append('<option value="">-------</option>');
+                    for(let opt=0; opt < data.data.length; opt++){
+                        $("#id_company").append('<option value="'+ data.data[opt].id + '">' + data.data[opt].name + '</option>');
+                    }
+                },
+                error: function (data){
+                    console.log(data);
+                }
+            });
+        }
+        else{
+            $("#div_id_company").hide();
+            document.getElementById("id_company").required = false;
+            document.getElementById("id_company").value = null;
+
+            $("#div_id_frc").hide();
+            document.getElementById("id_frc").required = false;
+            document.getElementById("id_frc").value = null;
+        }
+        if($(this).val() == 2 || $(this).val() == 4){
+            $("#div_id_company").show();
+            document.getElementById("id_company").required = true;
+        }
+    });
+
+    $('#id_company').click(function(){
+        if($(this).val() == 2 || $(this).val() == 4){
+            $("#div_id_frc").show();
+            document.getElementById("id_frc").required = true;
+            let csr = $("input[name=csrfmiddlewaretoken").val();
+            var item = $('#id_company').val();
+            var company = $('#id_company').val();
+            data = {item:item, csrfmiddlewaretoken:csr, company:company};
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'ChangeCompanyNameAndFRC' %}",
+                data: data,
+                success: function (data){
+                    $("#id_frc").children().remove().end();
+                    $("#id_frc").append('<option value="">-------</option>');
+                    for(let opt=0; opt < data.frc_plans.length; opt++){
+                        $("#id_frc").append('<option value="'+ data.frc_plans[opt].id + '">' + data.frc_plans[opt].price + '</option>');
+                    }
+                },
+                error: function (data){
+                    console.log(data);
+                }
+            });
+        }
+        else{
+            $("#div_id_frc").hide();
+            document.getElementById("id_frc").required = false;
+        }
+    });
+
+</script>
+{% endblock script %}

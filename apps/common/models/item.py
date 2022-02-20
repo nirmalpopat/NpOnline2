@@ -55,7 +55,7 @@ class Company(TimeStampable):
     )
     
     def __str__(self):
-        return f'{self.name} {self.item.name}'
+        return f'{self.name} {self.item}'
     
 class FRCPlans(TimeStampable):
     company = models.ForeignKey(
@@ -69,5 +69,8 @@ class FRCPlans(TimeStampable):
     )
     instinctive = models.FloatField(default=0)
     
+    class Meta:
+        unique_together = (('company', 'price'),)
+    
     def __str__(self):
-        return f'{self.company.name} {str(self.price)}'
+        return f'{self.company.item.name} {self.company.name} {self.price}'

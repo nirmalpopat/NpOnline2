@@ -8,12 +8,15 @@ from crum import get_current_user
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 # import base models from utils
 from utils.core.models import TimeStampable
 
 # import require models
 from apps.common.models import Item, Company, FRCPlans
+
+from apps.sells.managers.sells import ByAgent
 
 USER = get_user_model()
 
@@ -49,9 +52,16 @@ class Sells(TimeStampable):
         blank=True, 
         null=True
     ) 
+    
+    objects = models.Manager()
+    byAgent = ByAgent()
+    
 
     def __str__(self):
         return f'{self.item.name} Sold by {self.user.username} at price of {self.price}'
+    
+    def get_absolute_url(self):
+        return reverse('AddSell')
     
     def save(self, *args, **kwargs):
         self.user = get_current_user()

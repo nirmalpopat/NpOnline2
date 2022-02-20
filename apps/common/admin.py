@@ -5,6 +5,8 @@ from apps.common.models import *
 
 class CompanyAdmin(admin.ModelAdmin):
     list_display = [
+        'id',
+        'item',
         'name',
         'create_date',
         'modified_date',
@@ -24,6 +26,7 @@ admin.site.register(FRCPlans, FRCPlansAdmin)
 
 class ItemAdmin(admin.ModelAdmin):
     list_display = [
+        'id',
         'name',
         'is_stockable',
         'create_date',
